@@ -160,9 +160,32 @@ function preguntar(pregunta) {
   });
 }
 
+function validarCantidad(cantidad) {
+  const cantidadesPermitidas = [800, 8000, 80000];
+  return cantidadesPermitidas.includes(parseInt(cantidad));
+}
+
+function validarTipoOrdenamiento(tipo) {
+  const tiposPermitidos = ["1", "2", "3", "4", "5"];
+  return tiposPermitidos.includes(tipo);
+}
+
 async function main() {
-  const cantidadDatos = await preguntar(preguntaCantidadDatos);
-  const tipoOrdenamiento = await preguntar(preguntaTipoOrdenamiento);
+  let cantidadDatos;
+  do {
+    cantidadDatos = await preguntar(preguntaCantidadDatos);
+    if (!validarCantidad(cantidadDatos)) {
+      console.log("Cantidad no permitida. Por favor, ingresa una de las siguientes opciones: 800, 8000, 80000.");
+    }
+  } while (!validarCantidad(cantidadDatos));
+
+  let tipoOrdenamiento;
+  do {
+    tipoOrdenamiento = await preguntar(preguntaTipoOrdenamiento);
+    if (!validarTipoOrdenamiento(tipoOrdenamiento)) {
+      console.log("Tipo de ordenamiento no permitido. Por favor, elige una opción del 1 al 5.");
+    }
+  } while (!validarTipoOrdenamiento(tipoOrdenamiento));
 
   ejecutarOrdenamientos(cantidadDatos, tipoOrdenamiento);
   rl.close();
