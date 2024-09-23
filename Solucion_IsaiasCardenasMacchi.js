@@ -6,67 +6,86 @@ const preguntaTipoOrdenamiento = `Que metodo deseas probar:  \n 1. ordenamiento 
 
 // Función de ordenamiento por selección
 function ordenarBySeleccion(arreglo) {
+  // Recorre el arreglo hasta el penúltimo elemento
   for (let i = 0; i < arreglo.length - 1; i++) {
+    // Asume que el elemento actual es el menor
     let minIndex = i;
+    // Compara el elemento actual con los siguientes
     for (let j = i + 1; j < arreglo.length; j++) {
+      // Si encuentra un elemento menor, actualiza minIndex
       if (arreglo[j] < arreglo[minIndex]) {
         minIndex = j;
       }
     }
+    // Si minIndex ha cambiado, intercambia los elementos
     if (minIndex !== i) {
       [arreglo[i], arreglo[minIndex]] = [arreglo[minIndex], arreglo[i]];
     }
   }
+  // Devuelve el arreglo ordenado
   return arreglo;
 }
 
 // Función de ordenamiento por inserción
 function ordenarByInsercion(arreglo) {
+  // Recorre el arreglo desde el segundo elemento
   for (let i = 1; i < arreglo.length; i++) {
+    // Guarda el valor actual en una variable llave
     let llave = arreglo[i];
+    // Inicializa j como el índice anterior a i
     let j = i - 1;
 
-    // Mueve los elementos del arreglo que son mayores que la llave a una posición adelante de su posición actual
+    // Mueve los elementos mayores que la llave una posición adelante
     while (j >= 0 && arreglo[j] > llave) {
       arreglo[j + 1] = arreglo[j];
       j = j - 1;
     }
+    // Coloca la llave en su posición correcta
     arreglo[j + 1] = llave;
   }
+  // Devuelve el arreglo ordenado
   return arreglo;
 }
 
 // Función de ordenamiento burbuja mejorada
 function ordenarByBurbujaMejorada(arreglo) {
+  // Obtiene la longitud del arreglo
   let n = arreglo.length;
   let esIntercambiado;
 
+  // Repite el proceso mientras haya intercambios
   do {
     esIntercambiado = false;
+    // Recorre el arreglo hasta el penúltimo elemento no ordenado
     for (let i = 0; i < n - 1; i++) {
+      // Si el elemento actual es mayor que el siguiente, intercámbialos
       if (arreglo[i] > arreglo[i + 1]) {
-        // Intercambiar los elementos
         [arreglo[i], arreglo[i + 1]] = [arreglo[i + 1], arreglo[i]];
         esIntercambiado = true;
       }
     }
-    // Reducir el rango de comparación ya que el último elemento está en su lugar correcto
+    // Reduce el rango de comparación
     n--;
   } while (esIntercambiado);
 
+  // Devuelve el arreglo ordenado
   return arreglo;
 }
 
 // Funciones de ordenamiento mergesort
 function ordenarByMergesort(arreglo) {
+  // Si el arreglo tiene un solo elemento o está vacío, ya está ordenado
   if (arreglo.length <= 1) {
     return arreglo;
   }
 
+  // Encuentra el punto medio del arreglo
   const mitadArreglo = Math.floor(arreglo.length / 2);
+  // Divide el arreglo en dos mitades
   const arregloIzq = arreglo.slice(0, mitadArreglo);
   const arregloDer = arreglo.slice(mitadArreglo);
 
+  // Ordena recursivamente ambas mitades y las combina
   return combinarMergesort(ordenarByMergesort(arregloIzq), ordenarByMergesort(arregloDer));
 }
 
@@ -75,6 +94,7 @@ function combinarMergesort(arregloIzq, arregloDer) {
   let izqIndex = 0;
   let derIndex = 0;
 
+  // Combina los arreglos ordenados
   while (izqIndex < arregloIzq.length && derIndex < arregloDer.length) {
     if (arregloIzq[izqIndex] < arregloDer[derIndex]) {
       result.push(arregloIzq[izqIndex]);
@@ -85,19 +105,23 @@ function combinarMergesort(arregloIzq, arregloDer) {
     }
   }
 
+  // Añade los elementos restantes de ambos arreglos
   return result.concat(arregloIzq.slice(izqIndex)).concat(arregloDer.slice(derIndex));
 }
 
 // Función de ordenamiento quicksort
 function ordenarByQuicksort(arreglo) {
+  // Si el arreglo tiene un solo elemento o está vacío, ya está ordenado
   if (arreglo.length <= 1) {
     return arreglo;
   }
 
+  // Selecciona el pivote como el elemento del medio
   const pivote = arreglo[Math.floor(arreglo.length / 2)];
   const arregloIzq = [];
   const arregloDer = [];
 
+  // Divide el arreglo en dos subarreglos
   for (let i = 0; i < arreglo.length; i++) {
     if (i === Math.floor(arreglo.length / 2)) continue;
     if (arreglo[i] < pivote) {
@@ -107,6 +131,7 @@ function ordenarByQuicksort(arreglo) {
     }
   }
 
+  // Ordena recursivamente ambos subarreglos y los combina con el pivote
   return [...ordenarByQuicksort(arregloIzq), pivote, ...ordenarByQuicksort(arregloDer)];
 }
 
@@ -150,45 +175,65 @@ function ejecutarOrdenamientos(cantidadDatos, tipoOrden) {
   });
 }
 
+// Crea una interfaz de lectura para la entrada estándar (teclado) y la salida estándar (consola)
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
+// Función que realiza una pregunta al usuario y devuelve una promesa con la respuesta
 function preguntar(pregunta) {
   return new Promise((resolve) => {
+    // Hace una pregunta al usuario
     rl.question(pregunta, (respuesta) => {
+      // Resuelve la promesa con la respuesta del usuario
       resolve(respuesta);
     });
   });
 }
 
+// Función que valida si la cantidad ingresada está permitida
 function validarCantidad(cantidad) {
+  // Define las cantidades permitidas
   const cantidadesPermitidas = [800, 8000, 80000];
+  // Verifica si la cantidad ingresada está en el arreglo de cantidades permitidas
   return cantidadesPermitidas.includes(parseInt(cantidad));
 }
 
+// Función que valida si el tipo de ordenamiento ingresado está permitido
 function validarTipoOrdenamiento(tipo) {
+  // Define los tipos de ordenamiento permitidos
   const tiposPermitidos = ["1", "2", "3", "4", "5"];
+  // Verifica si el tipo ingresado está en el arreglo de tipos permitidos
   return tiposPermitidos.includes(tipo);
 }
 
+// Función principal que ejecuta el flujo del programa
 async function main() {
   let cantidadDatos;
+  // Bucle que pregunta por la cantidad de datos hasta que se ingrese una cantidad permitida
   do {
+    // Pregunta al usuario por la cantidad de datos
     cantidadDatos = await preguntar(preguntaCantidadDatos);
+    // Si la cantidad no es permitida, muestra un mensaje de error
     if (!validarCantidad(cantidadDatos)) {
       console.log("Cantidad no permitida. Por favor, ingresa una de las siguientes opciones: 800, 8000, 80000.");
     }
-  } while (!validarCantidad(cantidadDatos));
+  } while (!validarCantidad(cantidadDatos)); // Repite mientras la cantidad no sea permitida
 
   let tipoOrdenamiento;
+  // Bucle que pregunta por el tipo de ordenamiento hasta que se ingrese un tipo permitido
   do {
+    // Pregunta al usuario por el tipo de ordenamiento
     tipoOrdenamiento = await preguntar(preguntaTipoOrdenamiento);
+    // Si el tipo no es permitido, muestra un mensaje de error
     if (!validarTipoOrdenamiento(tipoOrdenamiento)) {
       console.log("Tipo de ordenamiento no permitido. Por favor, elige una opción del 1 al 5.");
     }
-  } while (!validarTipoOrdenamiento(tipoOrdenamiento));
+  } while (!validarTipoOrdenamiento(tipoOrdenamiento)); // Repite mientras el tipo no sea permitido
 
-  ejecutarOrdenamientos(cantidadDatos, tipoOrdenamiento);
+  // Cierra la interfaz de lectura
   rl.close();
+  // Llama a la función que ejecuta los ordenamientos con los datos ingresados
+  ejecutarOrdenamientos(cantidadDatos, tipoOrdenamiento);
 }
 
+// Llama a la función principal para iniciar el programa
 main();
