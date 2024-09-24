@@ -3,6 +3,7 @@ const readline = require("readline");
 
 const preguntaCantidadDatos = "Escribe la cantidad de datos que deseas ordenar (800, 8000, 80000): ";
 const preguntaTipoOrdenamiento = `Que metodo deseas probar:  \n 1. ordenamiento por selección. \n 2. ordenamiento por inserción. \n 3. ordenamiento por burbuja mejorada. \n 4. ordenamiento por mergesort. \n 5. ordenamiento por quicksort. \n`;
+const textoTipoMetodo = { 1: "selección", 2: "inserción", 3: "burbuja mejorada", 4: "mergesort", 5: "quicksort" };
 
 // Función de ordenamiento por selección
 function ordenarBySeleccion(arreglo) {
@@ -135,6 +136,14 @@ function ordenarByQuicksort(arreglo) {
   return [...ordenarByQuicksort(arregloIzq), pivote, ...ordenarByQuicksort(arregloDer)];
 }
 
+const metodosOrdenamiento = {
+  1: ordenarBySeleccion,
+  2: ordenarByInsercion,
+  3: ordenarByBurbujaMejorada,
+  4: ordenarByMergesort,
+  5: ordenarByQuicksort,
+};
+
 function ejecutarOrdenamientos(cantidadDatos, tipoOrden) {
   console.time("Tiempo de ejecución");
 
@@ -147,29 +156,10 @@ function ejecutarOrdenamientos(cantidadDatos, tipoOrden) {
 
     // Convertir el contenido del archivo en un arreglo de números
     const numeros = data.split("\n").map(Number);
+    const tipo = Number(tipoOrden);
 
-    if (Number(tipoOrden) === 1) {
-      // Ordenar el arreglo de números por selección
-      const numerosOrdenadosBySeleccion = ordenarBySeleccion(numeros);
-      console.log("Números ordenados por selección: " + JSON.stringify(numerosOrdenadosBySeleccion));
-    } else if (Number(tipoOrden) === 2) {
-      // Ordenar el arreglo de números por inserción
-      const numerosOrdenadosByInsercion = ordenarByInsercion(numeros);
-      console.log("Números ordenados por inserción: " + JSON.stringify(numerosOrdenadosByInsercion));
-    } else if (Number(tipoOrden) === 3) {
-      // Ordenar el arreglo de números por burbuja mejorada
-      const numerosOrdenadosByBurbujaMejorada = ordenarByBurbujaMejorada(numeros);
-      console.log("Números ordenados por burbuja mejorada: " + JSON.stringify(numerosOrdenadosByBurbujaMejorada));
-    } else if (Number(tipoOrden) === 4) {
-      // Ordenar el arreglo de números por mergesort
-      const numerosOrdenadosByMergesort = ordenarByMergesort(numeros);
-      console.log("Números ordenados por mergesort: " + JSON.stringify(numerosOrdenadosByMergesort));
-    } else if (Number(tipoOrden) === 5) {
-      // Ordenar el arreglo de números por quicksort
-      const numerosOrdenadosByQuicksort = ordenarByQuicksort(numeros);
-      console.log("Números ordenados por quicksort: " + JSON.stringify(numerosOrdenadosByQuicksort));
-    }
-
+    const numerosOrdenados = metodosOrdenamiento[tipo](numeros);
+    console.log(`Números ordenados por ${textoTipoMetodo[tipo]}: ${JSON.stringify(numerosOrdenados)}`);
     // Validacion tiempo final de ejecución del codigo.
     console.timeEnd("Tiempo de ejecución");
   });
